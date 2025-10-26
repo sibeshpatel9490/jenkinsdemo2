@@ -1,2 +1,1 @@
-print("*** Extract Data ****")
-print(df)
+print("*** Extract Data2 ****")
