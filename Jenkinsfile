@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        PYTHON_VERSION = 'C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python313\\python.exe'
+        PYTHON = 'C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python313\\python.exe'
     }
 
     stages {
@@ -12,12 +12,9 @@ pipeline {
             }
         }
 
-        stage('Set up Python') {
+        stage('Install Dependencies') {
             steps {
-                sh '''
-                python${PYTHON_VERSION} -m venv venv
-                source venv/bin/activate
-                pip install --upgrade pip
+                bat '''
                 pip install -r requirements.txt
                 '''
             }
@@ -25,10 +22,7 @@ pipeline {
 
         stage('Run API ETL Script') {
             steps {
-                sh '''
-                source venv/bin/activate
-                python extract_data.py
-                '''
+                bat '%PYTHON% api_reader.py'
             }
         }
     }
