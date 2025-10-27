@@ -1,29 +1,35 @@
 pipeline {
     agent any
+
     environment {
-        PYTHON = 'C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python313\\python.exe'
+        PYTHON_VERSION = 'C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python313\\python.exe'
     }
-    triggers {
-        cron("*/2 * * * *")
-    }
+
     stages {
-        stage('Checkout Code') {
+        stage('Checkout') {
             steps {
                 checkout scm
             }
         }
-        stage('Extract Data') {
+
+        stage('Set up Python') {
             steps {
-                bat "${env.PYTHON} extract_data.py"
+                sh '''
+                python${PYTHON_VERSION} -m venv venv
+                source venv/bin/activate
+                pip install --upgrade pip
+                pip install -r requirements.txt
+                '''
             }
         }
-    }
-    post {
-        success {
-            echo "success..."
-        }
-        failure {
-            echo "failure ..."
+
+        stage('Run API ETL Script') {
+            steps {
+                sh '''
+                source venv/bin/activate
+                python extract_data.py
+                '''
+            }
         }
     }
 }
