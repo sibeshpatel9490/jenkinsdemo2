@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         PYTHON = 'C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python313\\python.exe'
+        MY_SECRET_TOKEN = credentials('MY_SECRET_TOKEN')
     }
 
     stages {
@@ -12,17 +13,12 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Run Secure Reader') {
             steps {
-                bat '''
-                %PYTHON% -m pip install -r requirements.txt
-                '''
-            }
-        }
-
-        stage('Run API ETL Script') {
-            steps {
-                bat '%PYTHON% extract_data.py'
+                bat """
+                set MY_SECRET_TOKEN=%MY_SECRET_TOKEN%
+                %PYTHON% secure_reader.py
+                """
             }
         }
     }
