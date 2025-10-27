@@ -15,14 +15,14 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 bat '''
-                ${env.PYTHON} -m pip install -r requirements.txt
+                %PYTHON% -m pip install -r requirements.txt
                 '''
             }
         }
 
         stage('Run API ETL Script') {
             steps {
-                bat '${env.PYTHON} extract_data.py'
+                bat '%PYTHON% extract_data.py'
             }
         }
     }
